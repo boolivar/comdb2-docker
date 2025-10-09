@@ -36,9 +36,7 @@ RUN comdb2 --create $DBNAME
 
 COPY entrypoint.sh .
 
-ENTRYPOINT ["./entrypoint.sh"]
-
-CMD ["$DBNAME"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 5105 19000
 

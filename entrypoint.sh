@@ -1,2 +1,2 @@
-#!/bin/bash
-pmux -n && exec comdb2 "$@"
+#!/bin/sh
+pmux -n && exec comdb2 "$@" "$DBNAME"
