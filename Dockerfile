@@ -1,36 +1,50 @@
 # syntax=docker/dockerfile:1
+FROM ubuntu:latest AS build
+
+ARG BUILD_DEPS="\
+ bison \
+ build-essential \
+ cmake \
+ file \
+ flex \
+ libevent-dev \
+ liblz4-dev \
+ libprotobuf-c-dev \
+ libreadline-dev \
+ libsqlite3-dev \
+ libssl-dev \
+ libunwind-dev \
+ ncurses-dev \
+ protobuf-c-compiler \
+ tcl \
+ uuid-dev \
+ zlib1g-dev \
+"
+
+RUN --mount=source=comdb2,target=/comdb2 \
+    apt-get update \
+ && apt-get install -y --no-install-recommends $BUILD_DEPS \
+ && mkdir /build \
+ && cd /build \
+ && cmake ../comdb2 \
+ && make package
+
 FROM ubuntu:latest
+
+RUN --mount=source=.dockerenv,target=/.dockerenv \ 
+    --mount=from=build,source=/build,target=/comdb2 \
+    useradd --system --create-home --user-group comdb2 \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+  adduser \
+  /comdb2/comdb2.deb \
+ && rm -rf /var/lib/apt/lists/*
+
+USER comdb2
 
 ARG DBNAME=default
 
-RUN useradd --no-create-home --user-group comdb2
-
-RUN apt-get update      \
- && apt-get install -y  \
-    bison               \
-    build-essential     \
-    cmake               \
-    flex                \
-    libevent-dev        \
-    liblz4-dev          \
-    libprotobuf-c-dev   \
-    libreadline-dev     \
-    libsqlite3-dev      \
-    libssl-dev          \
-    libunwind-dev       \
-    ncurses-dev         \
-    protobuf-c-compiler \
-    tcl                 \
-    uuid-dev            \
-    zlib1g-dev
-
-RUN --mount=type=bind,source=comdb2,target=/comdb2,rw mkdir /comdb2/build \
-  && cd /comdb2/build \
-  && cmake ..         \
-  && make             \
-  && make install
-
-ENV PATH=/opt/bb/bin:$PATH DBNAME=$DBNAME
+ENV PATH=/opt/bb/bin:$PATH DBNAME=$DBNAME 
 
 RUN comdb2 --create $DBNAME
 
