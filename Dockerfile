@@ -9,6 +9,7 @@ ARG BUILD_DEPS="\
  cmake \
  file \
  flex \
+ git \
  libevent-dev \
  liblz4-dev \
  libprotobuf-c-dev \
