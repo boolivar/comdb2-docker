@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:latest AS build
+ARG UBUNTU_VERSION=24.04
+
+FROM ubuntu:$UBUNTU_VERSION AS build
 
 ARG BUILD_DEPS="\
  bison \
@@ -29,7 +31,7 @@ RUN --mount=source=comdb2,target=/comdb2 \
  && cmake ../comdb2 \
  && make package
 
-FROM ubuntu:latest
+FROM ubuntu:$UBUNTU_VERSION
 
 RUN --mount=source=.dockerenv,target=/.dockerenv \ 
     --mount=from=build,source=/build,target=/comdb2 \
