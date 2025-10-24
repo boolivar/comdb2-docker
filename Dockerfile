@@ -19,7 +19,7 @@ ARG BUILD_DEPS="\
  libunwind-dev \
  ncurses-dev \
  protobuf-c-compiler \
- tcl \
+ tcl-dev \
  uuid-dev \
  zlib1g-dev \
 "
