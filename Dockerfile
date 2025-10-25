@@ -57,6 +57,16 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 5105 19000
 
+COPY LICENSE /licenses/LICENSE
+COPY comdb2/LICENSE /licenses/comdb2/LICENSE
+COPY comdb2/berkdb/LICENSE /licenses/berkdb/LICENSE
+COPY comdb2/crc32c/sb8.h /licenses/crc32c/sb8.h
+COPY comdb2/dfp/decNumber/ICU-license.html /licenses/decNumber/ICU-license.html
+COPY comdb2/dfp/dfpal/ICU-license.html /licenses/dfpal/ICU-license.html
+COPY comdb2/lua/lua.h /licenses/lua/lua.h
+
 LABEL org.opencontainers.image.title="comdb2"
-LABEL org.opencontainers.image.source="https://github.com/boolivar/comdb2-docker"
+LABEL org.opencontainers.image.description="Docker image for the open-source Comdb2 database. Not endorsed by Bloomberg."
 LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.source="https://github.com/boolivar/comdb2-docker"
+LABEL org.opencontainers.image.authors="Aleksey Krichevskiy <boolivar@gmail.com>"
