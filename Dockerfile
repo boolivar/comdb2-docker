@@ -24,12 +24,14 @@ ARG BUILD_DEPS="\
  zlib1g-dev \
 "
 
-RUN --mount=source=comdb2,target=/comdb2 \
+RUN --mount=dst=/repo \
     apt-get update \
  && apt-get install -y --no-install-recommends $BUILD_DEPS \
+ && cd /repo/comdb2 \
+ && COMDB2_SEMVER=`git name-rev --no-undefined --exclude=main HEAD | cut -s -d/ -f3` \
  && mkdir /build \
  && cd /build \
- && cmake ../comdb2 \
+ && cmake -DCOMDB2_SEMVER=$COMDB2_SEMVER /repo/comdb2 \
  && make package
 
 FROM ubuntu:$UBUNTU_VERSION
