@@ -22,6 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
+          flavor: latest=false
           images: boolivar/comdb2
           tags: |
             type=raw,value=8.1
