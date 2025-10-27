@@ -16,7 +16,7 @@ jobs:
       - name: Release branch check
         id: release
         run: |
-          echo $GITHUB_REF_NAME | grep -Eq '^[0-9]+\.[0-9](?:\.[0-9]+)?$' && echo 'matches=true' || echo 'matches=false' >> $GITHUB_OUTPUT
+          echo $GITHUB_REF_NAME | grep -Pq '^\d+\.\d+(?:\.\d+)?$' && echo 'matches=true' || echo 'matches=false' >> $GITHUB_OUTPUT
 
       - name: Extract Docker image metadata
         id: meta
