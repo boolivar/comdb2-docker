@@ -33,7 +33,7 @@ jobs:
         with:
           push: true
           context: .
-          tags:
-            - boolivar/comdb2:8.1
-            - ${{ github.ref == 'refs/heads/master' && 'boolivar/comdb2:latest' || '' }}
+          tags: |
+            boolivar/comdb2:8.1
+            ${{ github.ref == 'refs/heads/master' && 'boolivar/comdb2:latest' || '' }}
           annotations: ${{ steps.meta.outputs.annotations }}
