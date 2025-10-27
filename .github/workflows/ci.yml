@@ -35,5 +35,5 @@ jobs:
           context: .
           tags: |
             boolivar/comdb2:8.1
-            ${{ github.ref == 'refs/heads/master' && 'boolivar/comdb2:latest' || '' }}
+            ${{ github.ref_name == 'master' && 'boolivar/comdb2:latest' || '' }}
           annotations: ${{ steps.meta.outputs.annotations }}
