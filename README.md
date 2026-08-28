@@ -1,5 +1,7 @@
 # Comdb2 Docker
 
+![Docker Pulls](https://img.shields.io/docker/pulls/boolivar/comdb2)
+
 This repository is an unofficial docker image source for [Comdb2](https://github.com/bloomberg/comdb2) distributed relational database.
 
 ## Usage
