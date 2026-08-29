@@ -2,13 +2,16 @@ name: Docker Build
 
 on: push
 
+permissions:
+  contents: write
+
 jobs:
   build:
     if: ${{ ! (startsWith(github.event.head_commit.message, 'chore') || startsWith(github.event.head_commit.message, 'docs')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive
@@ -18,29 +21,44 @@ jobs:
         run: |
           echo $GITHUB_REF_NAME | grep -Pq '^\d+\.\d+(?:\.\d+)?$' && echo 'matches=true' || echo 'matches=false' >> $GITHUB_OUTPUT
 
+      - name: Get submodule sha
+        id: sha
+        run: |
+          sha=$(git -C comdb2 rev-parse --short=7 HEAD)
+          echo "comdb2=$sha" >> $GITHUB_OUTPUT
+
       - name: Extract Docker image metadata
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           flavor: latest=false
           images: boolivar/comdb2
           tags: |
             type=raw,value=8.2
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=8.2-${{ steps.sha.outputs.comdb2 }}
+            type=raw,value=latest,enable={{ is_default_branch }}
       
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: ${{ github.ref_name == 'master' || steps.release.outputs.matches == 'true' }}
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
+
+      - name: Git Tag
+        if: steps.release.outputs.matches == 'true'
+        run: |
+          git config user.name "GitHub Action" && git config user.email "2944216+boolivar@users.noreply.github.com"
+          tag="8.2-${{ steps.sha.outputs.comdb2 }}"
+          git tag -a "$tag" -m "Release $tag"
+          git push origin "$tag"
