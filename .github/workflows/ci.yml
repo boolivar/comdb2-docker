@@ -56,7 +56,7 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
 
       - name: Git Tag
-        if: steps.release.outputs.matches == 'true'
+        if: github.ref_name == 'master' || steps.release.outputs.matches == 'true'
         run: |
           git config user.name "GitHub Action" && git config user.email "2944216+boolivar@users.noreply.github.com"
           tag="8.2-${{ steps.sha.outputs.comdb2 }}"
