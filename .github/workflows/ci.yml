@@ -2,6 +2,9 @@ name: Docker Build
 
 on: push
 
+permissions:
+  contents: write
+
 jobs:
   build:
     if: ${{ ! (startsWith(github.event.head_commit.message, 'chore') || startsWith(github.event.head_commit.message, 'docs')) }}
@@ -51,3 +54,11 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
+
+      - name: Git Tag
+        if: steps.release.outputs.matches == 'true'
+        run: |
+          git config user.name "GitHub Action" && git config user.email "2944216+boolivar@users.noreply.github.com"
+          tag="8.2-${{ steps.sha.outputs.comdb2 }}"
+          git tag -a "$tag" -m "Release $tag"
+          git push origin "$tag"
